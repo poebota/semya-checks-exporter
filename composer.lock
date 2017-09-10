@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6550c727241270b78b2707042f1f07f5",
+    "content-hash": "4a4ae1e94e151ce459518e8b3709f2e1",
     "packages": [
         {
             "name": "kriswallsmith/buzz",
@@ -289,8 +289,10 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "^7.0"
+    },
     "platform-dev": []
 }

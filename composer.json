@@ -1,8 +1,14 @@
 {
+    "name": "poebota/semya-checks-exporter",
+    "description": "Semya Retail Store Checks Exporter",
     "require": {
+        "php": "^7.0",
         "symfony/console": "^3.0",
         "kriswallsmith/buzz": "^0.15.1"
     },
+    "prefer-stable": true,
+    "minimum-stability":"stable",
+    "license": "poebat",
     "autoload": {
         "psr-4": {
             "SemyaChecksExporter\\" : "src/"

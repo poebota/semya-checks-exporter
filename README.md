@@ -10,10 +10,11 @@ PHP 7.0+
 
 Installation
 ============
-Via [composer](https://getcomposer.org/):
-```
-composer require poebota/semya
-```
+
+1. Get [composer](https://getcomposer.org/)
+2. `$ git clone https://github.com/poebota/semya-checks-exporter.git`
+3. `$ cd semya-checks-exporter`
+4. `$ composer install`
 
 Configuration
 =============
@@ -33,7 +34,7 @@ secret = abc-def-ghi
 udid = aa11bb22cc33dd44
 ```
 
-Be carefull! If no `udid` is present in config a new one can be obtained. Also eSemya API has a limits on `udid`'s used at the same time.
+Be carefull! If no `udid` is present in config a new one can be obtained. Also Semya API has a limits on `udid`'s used at the same time.
 
 Usage
 =====
