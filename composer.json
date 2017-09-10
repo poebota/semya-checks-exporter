@@ -1,0 +1,14 @@
+{
+    "require": {
+        "symfony/console": "^3.0",
+        "kriswallsmith/buzz": "^0.15.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "SemyaChecksExporter\\" : "src/"
+        }
+    },
+    "bin" : [
+        "bin/semya-checks-exporter"
+    ]
+}
