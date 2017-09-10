@@ -1,8 +1,10 @@
 <?php
 
-namespace SemyaChecksExporter;
+namespace SemyaChecksExporter\Command;
 
+use SemyaChecksExporter\ConfigLoader;
 use SemyaChecksExporter\Data\Config;
+use SemyaChecksExporter\Exporter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,32 +27,12 @@ class ExportCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $configFileName = $input->getOption('config');
+        $configLoader = new ConfigLoader();
+        $config = $configLoader->load($input->getOption('config'));
 
-        if (strpos($configFileName, '~') !== false) {
-            $info = posix_getpwuid(posix_getuid());
-            $configFileName = str_replace('~', $info['dir'], $configFileName);
+        if (!isset($config->udid)) {
+            throw new \InvalidArgumentException("'udid' option is missing or empty");
         }
-
-        $iniConfig = @parse_ini_file($configFileName);
-
-        if (!$iniConfig) {
-            throw new \InvalidArgumentException("{$configFileName} was not found or invalid ini-format");
-        }
-
-        if (!isset(
-            $iniConfig['card_id'],
-            $iniConfig['name'],
-            $iniConfig['secret']
-        )) {
-            throw new \InvalidArgumentException("'card_id', 'name', 'secret' options are missing or empty");
-        }
-
-        $config = new Config;
-        $config->cardId = $iniConfig['card_id'];
-        $config->name = $iniConfig['name'];
-        $config->secret = $iniConfig['secret'];
-        $config->udid = $iniConfig['udid'] ?? null;
 
         $startDate = null;
         $endDate = null;

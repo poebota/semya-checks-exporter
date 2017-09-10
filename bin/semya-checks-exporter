@@ -3,9 +3,15 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use SemyaChecksExporter\ExportCommand;
+use SemyaChecksExporter\Command\{
+    ExportCommand,
+    RegisterCommand,
+    UnregisterCommand
+};
 use Symfony\Component\Console\Application;
 
 $application = new Application('semya-checks-exporter', '0.1');
 $application->add(new ExportCommand('export'));
+$application->add(new RegisterCommand('register'));
+$application->add(new UnregisterCommand('unregister'));
 $application->run();

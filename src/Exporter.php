@@ -14,6 +14,7 @@ class Exporter
     const LOGIN_WITH_CARD_URL = '/api4/userInfo/loginWithCard';
     const GET_INFO_URL = '/api3/purchasesInfo/getInfo';
     const GET_DETAILS_INFO_URL = '/api3/purchasesInfo/getDetailsInfo';
+    const DELETE_DEVICE_TOKEN_URL = '/api3/userInfo/deleteDeviceToken';
 
     const PAGE_SIZE = 100;
 
@@ -36,7 +37,7 @@ class Exporter
 
     public function export(\DateTime $startDate, \DateTime $endDate) : \Generator
     {
-        $this->login();
+        $this->tryLogin($this->config->udid);
         $sinceLastId = 0;
 
         do {
@@ -103,17 +104,17 @@ class Exporter
         return $jsonResponse;
     }
 
-    protected function login()
+    protected function tryLogin(string $udid)
     {
-        $this->config->udid = $this->config->udid ?? bin2hex(random_bytes(8));
         $this->config->token = $this->generateToken(
             $this->config->cardId,
-            $this->config->udid
+            $udid
         );
 
         $request = $this->createRequest(
             self::LOGIN_WITH_CARD_URL,
             Data\Login::createFromConfig($this->config)
+                ->setUdid($udid)
         );
         $this->client->send($request,$response = new Response());
 
@@ -133,6 +134,33 @@ class Exporter
         $this->config->deviceId = $jsonResponse['deviceId'];
         $this->config->canonicalCardId = $jsonResponse['cardId'];
         $this->config->token = $this->generateToken($this->config->canonicalCardId, $this->config->deviceId);
+    }
+
+    public function unregister(string $udid)
+    {
+        $this->tryLogin($udid);
+        $request = $this->createRequest(self::DELETE_DEVICE_TOKEN_URL, Data\Unregister::createFromConfig($this->config));
+        $this->client->send($request, $response = new Response());
+
+        $jsonResponse = @json_decode($response->getContent(), true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new \RuntimeException('Invalid json response: ' . json_last_error_msg() . "\n$request\n{$response}\n");
+        }
+
+        if (
+            !isset($jsonResponse['success']) ||
+            (1 != $jsonResponse['success'])
+        ) {
+            throw new \RuntimeException('Unable to unregister device ' . "\n$request\n{$response}\n");
+        }
+    }
+
+    public function register()
+    {
+        $this->tryLogin($udid = bin2hex(random_bytes(8)));
+
+        return $udid;
     }
 
     protected function sha256Pad(string $input) : string

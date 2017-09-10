@@ -31,8 +31,14 @@ class Login
         $login->cardId = $config->cardId;
         $login->token = $config->token;
         $login->name = $config->name;
-        $login->udid = $config->udid;
 
         return $login;
+    }
+
+    public function setUdid(string $udid) : self
+    {
+        $this->udid = $udid;
+
+        return $this;
     }
 }
